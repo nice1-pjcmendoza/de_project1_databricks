@@ -1,0 +1,10 @@
+git init
+git pull origin main
+
+git add .
+git commit -m "20260209"
+git push -u origin main
+
+git log
+git status
+git restore . # to discard changes in working directory
