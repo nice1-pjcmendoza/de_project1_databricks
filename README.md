@@ -1,67 +1,131 @@
-# Databricks Data Warehousing Project
+# Medallion Architecture on Databricks: A Cyclistic Case Study
 
 ## Introduction
 
-Welcome to the ...
+Welcome to the **Medallion Architecture on Databricks: A Cyclistic Case Study**! In this project, we will explore how to implement the Medallion Architecture on Azure Databricks, with a focus on the Cyclistic bike share dataset.
+
+This project will cover the following key areas:
+- Understand the business requirements
+- Explore the Cyclistic dataset
+- Build the Azure Databricks infrastructure
+- Build the Catalog & Schemas
+- Build the Landing, Bronze, Silver, and Gold layers
+- Perform data analytics and derive insights
 
 
 ## Understand the Business Requirements
 
-The business wanted to understand the following:
-- Who are the most valuable customers?
-- What are the most popular bike routes?
-- What are the most popular bike types?
+The director of marketing team believes Cyclistic's future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently. 
+
+From these insights, your team will design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your recommendations, so they must be backed up with compelling data insights and professional data visualizations. 
+
+Determine how MEMBERS and CASUAL users use Cyclistic bikes differently. Specifically:
+1. Analyze the data and identify trends and patterns,
+2. Create visualizations, and
+3. Provide key findings and recommendations. 
+
+Let's ask the **SMART** questions.
+
+* **Specific**. Which bike type is the most preferred by MEMBERS and CASUAL users?
+* **Measurable**. What percentage of the total rides is made by the MEMBERS?
+* **Action-oriented**. How can we convince the CASUAL users to join the annual membership?
+* **Relevant**. What programs can we launch to attract more users to ride bikes?
+* **Time-bound**. What trends can we observe from different short-term time periods?
 
 
-## The Cyclistic Dataset
+## Explore the Cyclistic Dataset
 
-### Quick Overview of the Dataset
+Cyclistic’s datasets can be downloaded [here](https://divvy-tripdata.s3.amazonaws.com/index.html). This case study covers the 2025 data available in the repository. The files are first-party datasets owned, prepared and shared by Cyclistic with file naming format ‘YYYYMM-divvy-tripdata.csv’.
 
-**File:** `202501-divvy-tripdata.csv` (Cyclistic/Divvy schema)
-...
+Let's be reminded that Cyclistic is a fictional company that represents a real-world organization. Its datasets are prepared to maintain anonymity. The data has been made available by Motivate International Inc. under this [license](https://divvybikes.com/data-license-agreement).
+
+<details>
+  <summary>Click here: Quick overview of the dataset</summary>
+
+**Sample File:** `202501-divvy-tripdata.csv`
+
+**Shape & Structure**
+
+*   **Rows × Columns:** **138,689 × 13**. Columns: `ride_id`, `rideable_type`, `started_at`, `ended_at`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `start_lat`, `start_lng`, `end_lat`, `end_lng`, `member_casual`. 
+
+**Data Types**
+
+*   `ride_id`, `rideable_type`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `member_casual` → string
+*   `started_at`, `ended_at` → timestamp
+*   `start_lat`, `start_lng`, `end_lat`, `end_lng` → double 
+
+**Data Quality Highlights**
+
+*   **Duplicate `ride_id`:** 0. 
+*   **Nulls:** `start_station_*` missing **22,852** rows; `end_station_*` missing **24,073** rows; `end_lat/end_lng` missing **61** rows. 
+*   **Durations:** computed duration\_secs > 0 for all; **0** negative or zero durations in this sample. 
+*   **Geo validation:** **61** rows have out‑of‑range/missing lat/lng on at least one end. 
+*   **Self‑loops:** \~**2,704** same station id; \~**5,275** same coordinates. Useful for QA or business rules. 
+*   **Haversine distance (km):** median \~**1.29 km**, 90th **3.65 km**, 99th **7.90 km**, max **32.83 km**; >50 km **0** rows. 
+*   **Member mix:** **114,536** member (82.6%) vs **24,153** casual (17.4%). 
+*   **Rideable types:** **89,071** electric vs **49,618** classic. 
+*   **Temporal:** peaks around **16:00–18:00**; midweek busier; **53** trips start in Dec 2024 (cross‑month edge case). 
+*   **Top stations (sample):** “Kingsbury St & Kinzie St”, “Canal St & Madison St”, “Clinton St & Washington Blvd” rank high for start/end. 
+
+</details>
+
 
 ## Build the Azure Databricks Infrastructure
 
-### Create the Databricks Workspace
+To build the infrastructure for this project, we will need to set up the following components in Azure:
 
-![1770637481388](image/README/1770637481388.png)
+* A **Databricks Workspace** to run our data processing and analytics workloads.
+* An **Access Connector** to securely connect our Databricks workspace to our storage account.
+* A **Storage Account** to store our raw and processed data.
+* A **Container** in the storage account to organize our data.
 
-### Create an Access Connector
+In Databricks, we will set up the following components:
+* A **Storage Credential** in Databricks to access the storage account.
+* An **External Location** in Databricks to reference the container in our storage account.
 
-![1770637584703](image/README/1770637584703.png)
+<details>
+  <summary>Click here: Snippets from setting up the infrastructure</summary>
 
-![1770637630239](image/README/1770637630239.png)
+  ### Create the Databricks Workspace
 
-### Create the Storage Account
+  ![1770637481388](image/README/1770637481388.png)
 
-![1770637685309](image/README/1770637685309.png)
+  ### Create an Access Connector
 
-### Enable Access to the Storage Account
+  ![1770637584703](image/README/1770637584703.png)
 
-![1770637797073](image/README/1770637797073.png)
+  ![1770637630239](image/README/1770637630239.png)
 
-### Create A Storage Credential in Databricks
+  ### Create the Storage Account
 
-![1770637904308](image/README/1770637904308.png)
+  ![1770637685309](image/README/1770637685309.png)
 
-### Create A Container
+  ### Enable Access to the Storage Account
 
-![1770638361588](image/README/1770638361588.png)
+  ![1770637797073](image/README/1770637797073.png)
 
-### Create An External Location
+  ### Create A Storage Credential in Databricks
 
-![1770637951731](image/README/1770637951731.png)
+  ![1770637904308](image/README/1770637904308.png)
 
-### Upload the Datasets
+  ### Create A Container
 
-![1770638062683](image/README/1770638062683.png)
+  ![1770638361588](image/README/1770638361588.png)
 
+  ### Create An External Location
 
+  ![1770637951731](image/README/1770637951731.png)
 
+  ### Upload the Datasets
 
+  ![1770638062683](image/README/1770638062683.png)
+
+</details>
 
 
 ## Build the Catalog & Schemas
+
+### Create the Catalog cyclistic
 
 ```sql
 CREATE CATALOG IF NOT EXISTS cyclistic 
@@ -69,9 +133,17 @@ MANAGED LOCATION 'abfss://deprojectcontainer@deprojectextdatalake.dfs.core.windo
 COMMENT 'Catalog for Cyclistic/Divvy';
 ```
 
+Let's verify the catalog we just created.
+
 ```sql
 DESCRIBE CATALOG EXTENDED cyclistic;
 ```
+
+### Create the Schemas
+
+Following the Medallion Architecture, we will create four schemas: `landing`, `bronze`, `silver`, and `gold`.
+
+If you want to learn more about the Medallion Architecture, check out this [blog post](https://www.datawithbaraa.com/post/medallion-architecture-on-databricks).
 
 ```sql
 USE CATALOG cyclistic;
@@ -82,24 +154,56 @@ CREATE SCHEMA IF NOT EXISTS silver COMMENT 'Cleansed & conformed';
 CREATE SCHEMA IF NOT EXISTS gold   COMMENT 'Modeled analytics (facts/aggregations)';
 ```
 
-## Build the Landing Schema
+## Build the Landing Layer
+
+The Landing layer is where we will store the raw data files as they are ingested from the external source. Here we will create an external volume that points to the location of the raw data files in our Azure Storage Account.
+
+**Note**: In a production environment, you would typically use a more secure method to manage access to your storage account, such as using **Azure Managed Identities** or **Databricks Secrets**. 
+
+### Create DDL for External Volume
 
 ```sql
 USE CATALOG cyclistic;
 USE SCHEMA landing;
 
+-- Create an external volume for raw data
 CREATE EXTERNAL VOLUME IF NOT EXISTS divvy_trip_data
 LOCATION 'abfss://deprojectcontainer@deprojectextdatalake.dfs.core.windows.net/divvy_trip_data/'
 COMMENT 'External volume for raw data';
 ```
 
+### Verify the External Volume
+
+```sql
+DESCRIBE EXTERNAL VOLUME cyclistic.landing.divvy_trip_data;
+```
+
+### Retrieve the VOLUME_PATH for the Bronze Layer Ingestion Script
+
+```sql
+SELECT VOLUME_PATH FROM SYSTEM.VOLUMES WHERE VOLUME_NAME = 'divvy_trip_data';
+```
+
 ## Build Bronze Layer
+
+The Bronze layer is where we will store the raw ingested data in a Delta table format. This layer serves as the foundation for further data processing and cleansing.
+
+We wll also add ingestion metadata columns to track the source file and ingestion timestamp.
+
+**Note**: In a production environment, you would typically implement more robust data validation and error handling mechanisms during the ingestion process.
+
+
+### Analyze Source Systems
+
+
+
+### Create DDL for Delta Table
 
 ```sql
 USE CATALOG cyclistic;
 USE SCHEMA bronze;
 
--- Create an empty Delta table with the raw schema
+-- Create a Delta table with the raw schema
 CREATE TABLE IF NOT EXISTS trips_raw (
   ride_id            STRING,
   rideable_type      STRING,
@@ -119,16 +223,13 @@ CREATE TABLE IF NOT EXISTS trips_raw (
 )
 ```
 
-### Analyze Source Systems
+### Develop SQL Load Script
 
+Here we will load the raw CSV files into the Bronze Delta table using the `COPY INTO` command. This command is efficient and handles schema evolution gracefully. The COPY INTO command is **idempotent**, meaning it can be run multiple times without duplicating data, as it tracks which files have already been loaded.
 
-### Create DDL for Tables
-
-
-### Develop SQL Load Scripts
+Note: Adjust the file path in the `FROM` clause to match the location of your raw data files.
 
 ```sql
--- Load all files. COPY INTO is idempotent: it tracks which files have been loaded.
 COPY INTO trips_raw
 FROM (
   SELECT
@@ -170,20 +271,6 @@ RETURN 2*6371*asin(sqrt(
   pow(sin(radians(lat2-lat1)/2),2) +
   cos(radians(lat1))*cos(radians(lat2))*pow(sin(radians(lon2-lon1)/2),2)
 ));
-```
-
-```sql
-
-```
-
-```sql
-
-```
-
-
-
-```sql
-
 ```
 
 ### Explore & Understand The Data
