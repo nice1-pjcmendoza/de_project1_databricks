@@ -39,36 +39,6 @@ Cyclistic’s datasets can be downloaded [here](https://divvy-tripdata.s3.amazon
 
 Let's be reminded that Cyclistic is a fictional company that represents a real-world organization. Its datasets are prepared to maintain anonymity. The data has been made available by Motivate International Inc. under this [license](https://divvybikes.com/data-license-agreement).
 
-<details>
-<summary><h3>Quick Overview of the Dataset</h3></summary>
-
-**Sample File:** `202501-divvy-tripdata.csv`
-
-**Shape & Structure**
-
-*   **Rows × Columns:** **138,689 × 13**. Columns: `ride_id`, `rideable_type`, `started_at`, `ended_at`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `start_lat`, `start_lng`, `end_lat`, `end_lng`, `member_casual`. 
-
-**Data Types**
-
-*   `ride_id`, `rideable_type`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `member_casual` → string
-*   `started_at`, `ended_at` → timestamp
-*   `start_lat`, `start_lng`, `end_lat`, `end_lng` → double 
-
-**Data Quality Highlights**
-
-*   **Duplicate `ride_id`:** 0. 
-*   **Nulls:** `start_station_*` missing **22,852** rows; `end_station_*` missing **24,073** rows; `end_lat/end_lng` missing **61** rows. 
-*   **Durations:** computed duration\_secs > 0 for all; **0** negative or zero durations in this sample. 
-*   **Geo validation:** **61** rows have out‑of‑range/missing lat/lng on at least one end. 
-*   **Self‑loops:** \~**2,704** same station id; \~**5,275** same coordinates. Useful for QA or business rules. 
-*   **Haversine distance (km):** median \~**1.29 km**, 90th **3.65 km**, 99th **7.90 km**, max **32.83 km**; >50 km **0** rows. 
-*   **Member mix:** **114,536** member (82.6%) vs **24,153** casual (17.4%). 
-*   **Rideable types:** **89,071** electric vs **49,618** classic. 
-*   **Temporal:** peaks around **16:00–18:00**; midweek busier; **53** trips start in Dec 2024 (cross‑month edge case). 
-*   **Top stations (sample):** “Kingsbury St & Kinzie St”, “Canal St & Madison St”, “Clinton St & Washington Blvd” rank high for start/end. 
-
-</details>
-
 
 ## Build the Azure Databricks Infrastructure
 
@@ -84,14 +54,14 @@ In Databricks, we will set up the following components:
 * An **External Location** in Databricks to reference the container in our storage account.
 
 <details>
-<summary><h3>Create the Databricks Workspace</h3></summary>
+<summary>Step 1: Create the Databricks Workspace</summary>
 
 ![1770637481388](image/README/1770637481388.png)
 
 </details>
 
 <details>
-<summary><h3>Create an Access Connector</h3></summary>
+<summary>Step 2: Create an Access Connector</summary>
 
 ![1770637584703](image/README/1770637584703.png)
 
@@ -100,42 +70,42 @@ In Databricks, we will set up the following components:
 </details>
 
 <details>
-<summary><h3>Create the Storage Account</h3></summary>
+<summary>Step 3: Create the Storage Account</summary>
 
 ![1770637685309](image/README/1770637685309.png)
 
 </details>
 
 <details>
-<summary><h3>Enable Access to the Storage Account</h3></summary>
+<summary>Step 4: Enable Access to the Storage Account</summary>
 
 ![1770637797073](image/README/1770637797073.png)
 
 </details>
 
 <details>
-<summary><h3>Create A Storage Credential in Databricks</h3></summary>
+<summary>Step 5: Create A Storage Credential in Databricks</summary>
 
 ![1770637904308](image/README/1770637904308.png)
 
 </details>
 
 <details>
-<summary><h3>Create A Container</h3></summary>
+<summary>Step 6: Create A Container</summary>
 
 ![1770638361588](image/README/1770638361588.png)
 
 </details>
 
 <details>
-<summary><h3>Create An External Location</h3></summary>
+<summary>Step 7: Create An External Location</summary>
 
 ![1770637951731](image/README/1770637951731.png)
 
 </details>
 
 <details>
-<summary><h3>Upload the Datasets</h3></summary>
+<summary>Step 8: Upload the Datasets</summary>
 
 ![1770638062683](image/README/1770638062683.png)
 
@@ -203,7 +173,7 @@ DESCRIBE EXTERNAL VOLUME cyclistic.landing.divvy_trip_data;
 SELECT VOLUME_PATH FROM SYSTEM.VOLUMES WHERE VOLUME_NAME = 'divvy_trip_data';
 ```
 
-## Build Bronze Layer
+## Build the Bronze Layer
 
 The Bronze layer is where we will store the raw ingested data in a Delta table format. This layer serves as the foundation for further data processing and cleansing.
 
@@ -212,17 +182,47 @@ We wll also add ingestion metadata columns to track the source file and ingestio
 **Note**: In a production environment, you would typically implement more robust data validation and error handling mechanisms during the ingestion process.
 
 
-### Analyze Source Systems
+### Analyze the Dataset
+
+<details>
+<summary><h3>Quick Overview of the Dataset</h3></summary>
+
+**Sample File:** `202501-divvy-tripdata.csv`
+
+**Shape & Structure**
+
+*   **Rows × Columns:** **138,689 × 13**. Columns: `ride_id`, `rideable_type`, `started_at`, `ended_at`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `start_lat`, `start_lng`, `end_lat`, `end_lng`, `member_casual`. 
+
+**Data Types**
+
+*   `ride_id`, `rideable_type`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `member_casual` → string
+*   `started_at`, `ended_at` → timestamp
+*   `start_lat`, `start_lng`, `end_lat`, `end_lng` → double 
+
+**Data Quality Highlights**
+
+*   **Duplicate `ride_id`:** 0. 
+*   **Nulls:** `start_station_*` missing **22,852** rows; `end_station_*` missing **24,073** rows; `end_lat/end_lng` missing **61** rows. 
+*   **Durations:** computed duration\_secs > 0 for all; **0** negative or zero durations in this sample. 
+*   **Geo validation:** **61** rows have out‑of‑range/missing lat/lng on at least one end. 
+*   **Self‑loops:** \~**2,704** same station id; \~**5,275** same coordinates. Useful for QA or business rules. 
+*   **Haversine distance (km):** median \~**1.29 km**, 90th **3.65 km**, 99th **7.90 km**, max **32.83 km**; >50 km **0** rows. 
+*   **Member mix:** **114,536** member (82.6%) vs **24,153** casual (17.4%). 
+*   **Rideable types:** **89,071** electric vs **49,618** classic. 
+*   **Temporal:** peaks around **16:00–18:00**; midweek busier; **53** trips start in Dec 2024 (cross‑month edge case). 
+*   **Top stations (sample):** “Kingsbury St & Kinzie St”, “Canal St & Madison St”, “Clinton St & Washington Blvd” rank high for start/end. 
+
+</details>
 
 
+### Create DDL for the *trips_raw* Table
 
-### Create DDL for Delta Table
+The DDL below creates the Bronze Delta table `trips_raw` with ingestion metadata columns. DDL stands for **Data Definition Language**, which is used to define and manage database structures.
 
 ```sql
 USE CATALOG cyclistic;
 USE SCHEMA bronze;
 
--- Create a Delta table with the raw schema
 CREATE TABLE IF NOT EXISTS trips_raw (
   ride_id            STRING,
   rideable_type      STRING,
@@ -242,9 +242,10 @@ CREATE TABLE IF NOT EXISTS trips_raw (
 )
 ```
 
+
 ### Develop SQL Load Script
 
-Here we will load the raw CSV files into the Bronze Delta table using the `COPY INTO` command. This command is efficient and handles schema evolution gracefully. The COPY INTO command is **idempotent**, meaning it can be run multiple times without duplicating data, as it tracks which files have already been loaded.
+Here we will load the raw CSV files into the Bronze Delta table using the `COPY INTO` command. This command is efficient and handles schema evolution. The COPY INTO command is **idempotent**, meaning it can be run multiple times without duplicating data, as it tracks which files have already been loaded.
 
 Note: Adjust the file path in the `FROM` clause to match the location of your raw data files.
 
@@ -274,30 +275,26 @@ FORMAT_OPTIONS ('header' = 'true', 'multiLine'='false')
 COPY_OPTIONS ('mergeSchema'='true');  -- safe for extra cols in future
 ```
 
-## Build Silver Layer
+## Build the Silver Layer
+
+The Silver layer is where we will store the cleansed and conformed data. This layer is optimized for analytics and reporting.
+
+### Explore & Understand The Data
+
+Here are some key data quality checks and transformations we will perform in the Silver layer:
+*   **Null Handling**: Remove records with null `started_at` or `ended_at`.
+*   **Duration Calculation**: Calculate trip duration in seconds and minutes; remove records with non-positive durations.
+*   **Geographical Validation**: Ensure latitude and longitude values are within valid ranges.
+*   **Distance Calculation**: Compute Haversine distance between start and end coordinates.
+*   **Self-loop Detection**: Identify trips that start and end at the same station or coordinates.
+
+
+### Create DDL for the *trips_clean* Table
 
 ```sql
 USE CATALOG cyclistic;
 USE SCHEMA silver;
-```
 
-```sql
--- Haversine function
-CREATE OR REPLACE FUNCTION silver.haversine_km(
-  lat1 DOUBLE, lon1 DOUBLE, lat2 DOUBLE, lon2 DOUBLE
-) RETURNS DOUBLE
-RETURN 2*6371*asin(sqrt(
-  pow(sin(radians(lat2-lat1)/2),2) +
-  cos(radians(lat1))*cos(radians(lat2))*pow(sin(radians(lon2-lon1)/2),2)
-));
-```
-
-### Explore & Understand The Data
-
-### Create DDL for Tables
-
-```sql
--- Create Silver table
 CREATE TABLE IF NOT EXISTS trips_clean
 (
   ride_id            STRING NOT NULL,
@@ -330,32 +327,64 @@ TBLPROPERTIES (
 );
 ```
 
-### Clean & Load ___
+### Create the Haversine Function
+
+The Haversine formula calculates the distance between two points on the surface of a sphere given their latitude and longitude. This function will be used to compute the distance between the start and end locations of each trip.
+
+If the Haversine formula returned 0, it would imply that the two points are identical, meaning the trip started and ended at the same location - a self-loop.
+
+To know more about the Haversine formula, you can check out this [Wikipedia article](https://en.wikipedia.org/wiki/Haversine_formula).
 
 ```sql
--- Upsert into Silver
-MERGE INTO trips_clean t
-USING (
+USE CATALOG cyclistic;
+USE SCHEMA silver;
+
+CREATE OR REPLACE FUNCTION silver.haversine_km(
+  lat1 DOUBLE, lon1 DOUBLE, lat2 DOUBLE, lon2 DOUBLE
+) RETURNS DOUBLE
+RETURN 2*6371*asin(sqrt(
+  pow(sin(radians(lat2-lat1)/2),2) +
+  cos(radians(lat1))*cos(radians(lat2))*pow(sin(radians(lon2-lon1)/2),2)
+));
+```
+
+### Cleanse, Transform and Load Data
+
+The Transform process is probably the most exciting part of this project. It is where we apply the data quality checks and transformations to cleanse the data.
+
+We begin by selecting data from the Bronze layer (`trips_raw`) and applying the necessary transformations and filters to create a clean and conformed dataset in the Silver layer (`trips_clean`). Then, we use the `MERGE INTO` statement to perform an upsert operation, ensuring that our Silver layer is always up-to-date and consistent with the latest data from the Bronze layer.
+
+The `MERGE INTO` statement is used to perform an **upsert** operation, which means it will **update** existing records in the `trips_clean` table if they already exist based on `ride_id`, or **insert** new records if they do not exist yet.
+
+The SQL code below has several key components:
+*   **Source Selection**: Select data from the Bronze layer (`trips_raw`).
+*   **Data Quality Filters**: Apply filters in the `WHERE` clause to remove records with null values, non-positive durations, and out-of-range geographical coordinates.
+*   **Derived Columns**: Calculate new columns such as `ride_date`, `ride_hour`, `duration_sec`, `duration_min`, `distance_km`, and `is_self_loop`.
+
+```sql
+MERGE INTO trips_clean tc
+USING 
+(
   SELECT
     br.ride_id,
     br.rideable_type,
     br.started_at,
     br.ended_at,
-    DATE(br.started_at)              AS ride_date,
-    HOUR(br.started_at)              AS ride_hour,
-    CAST((unix_timestamp(br.ended_at)-unix_timestamp(br.started_at)) AS INT)      AS duration_sec,
-    ROUND((unix_timestamp(br.ended_at)-unix_timestamp(br.started_at))/60.0,2)     AS duration_min,
+    DATE(br.started_at) AS ride_date,
+    HOUR(br.started_at) AS ride_hour,
+    CAST((unix_timestamp(br.ended_at)-unix_timestamp(br.started_at)) AS INT) AS duration_sec,
+    ROUND((unix_timestamp(br.ended_at)-unix_timestamp(br.started_at))/60.0,2) AS duration_min,
     br.start_station_id,
     br.start_station_name,
     br.end_station_id,
     br.end_station_name,
     br.start_lat, br.start_lng, br.end_lat, br.end_lng,
-    CAST(silver.haversine_km(br.start_lat, br.start_lng, br.end_lat, br.end_lng) AS DECIMAL(9,3))       AS distance_km,
+    CAST(silver.haversine_km(br.start_lat, br.start_lng, br.end_lat, br.end_lng) AS DECIMAL(9,3)) AS distance_km,
     (br.start_station_id <=> br.end_station_id 
-     OR (round(br.start_lat,6) <=> round(br.end_lat,6) AND round(br.start_lng,6) <=> round(br.end_lng,6)))      AS is_self_loop,
+     OR (round(br.start_lat,6) <=> round(br.end_lat,6) AND round(br.start_lng,6) <=> round(br.end_lng,6))) AS is_self_loop,
     br.member_casual,
-    br._ingest_file       AS _src_file,
-    DATE(br._ingest_ts)   AS _load_date
+    br._ingest_file AS _src_file,
+    DATE(br._ingest_ts) AS _load_date
   FROM cyclistic.bronze.trips_raw br
   WHERE br.started_at IS NOT NULL
     AND br.ended_at   IS NOT NULL
@@ -364,22 +393,24 @@ USING (
     AND br.end_lat   BETWEEN -90 AND 90
     AND br.start_lng BETWEEN -180 AND 180
     AND br.end_lng   BETWEEN -180 AND 180
-) s
-ON t.ride_id   = s.ride_id
+) tr
+ON tc.ride_id   = tr.ride_id
 WHEN MATCHED THEN UPDATE SET *
 WHEN NOT MATCHED THEN INSERT *;
 ```
 
+Add Silver-level data quality constraints (fail-fast or informative). This is a simple way to enforce data quality rules at the table level. The `TBLPROPERTIES` can be used to document the quality checks that are applied to the data in the Silver layer. This can serve as a reference for data engineers and analysts who work with the data, and it can also be used by automated data quality monitoring tools.
+
 ```sql
--- Add Silver-level data quality constraints (fail-fast or informative)
 ALTER TABLE trips_clean SET TBLPROPERTIES (
   'quality.duration_pos' = 'ended_at > started_at',
   'quality.geo_valid'    = 'lat/lng within range'
 );
 ```
 
+Optional performance tuning using `ZORDER`. The `OPTIMIZE` command reorganizes the data in the table to improve query performance. `ZORDER` is a technique that optimizes the layout of data on disk to improve query performance, especially for queries that filter on specific columns. By ZORDERing the `trips_clean` table by `ride_date`, `member_casual`, and `start_station_id`, we can significantly speed up queries that filter on these columns, which are common in our use case. 
+
 ```sql
--- Optional performance tuning using ZORDER
 OPTIMIZE trips_clean ZORDER BY (ride_date, member_casual, start_station_id);
 ```
 
