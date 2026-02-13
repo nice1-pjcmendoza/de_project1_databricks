@@ -40,7 +40,7 @@ Cyclistic’s datasets can be downloaded [here](https://divvy-tripdata.s3.amazon
 Let's be reminded that Cyclistic is a fictional company that represents a real-world organization. Its datasets are prepared to maintain anonymity. The data has been made available by Motivate International Inc. under this [license](https://divvybikes.com/data-license-agreement).
 
 <details>
-  <summary>Click here: Quick overview of the dataset</summary>
+<summary><h3>Quick Overview of the Dataset</h3></summary>
 
 **Sample File:** `202501-divvy-tripdata.csv`
 
@@ -84,41 +84,60 @@ In Databricks, we will set up the following components:
 * An **External Location** in Databricks to reference the container in our storage account.
 
 <details>
-  <summary>Click here: Snippets from setting up the infrastructure</summary>
+<summary><h3>Create the Databricks Workspace</h3></summary>
 
-  ### Create the Databricks Workspace
+![1770637481388](image/README/1770637481388.png)
 
-  ![1770637481388](image/README/1770637481388.png)
+</details>
 
-  ### Create an Access Connector
+<details>
+<summary><h3>Create an Access Connector</h3></summary>
 
-  ![1770637584703](image/README/1770637584703.png)
+![1770637584703](image/README/1770637584703.png)
 
-  ![1770637630239](image/README/1770637630239.png)
+![1770637630239](image/README/1770637630239.png)
 
-  ### Create the Storage Account
+</details>
 
-  ![1770637685309](image/README/1770637685309.png)
+<details>
+<summary><h3>Create the Storage Account</h3></summary>
 
-  ### Enable Access to the Storage Account
+![1770637685309](image/README/1770637685309.png)
 
-  ![1770637797073](image/README/1770637797073.png)
+</details>
 
-  ### Create A Storage Credential in Databricks
+<details>
+<summary><h3>Enable Access to the Storage Account</h3></summary>
 
-  ![1770637904308](image/README/1770637904308.png)
+![1770637797073](image/README/1770637797073.png)
 
-  ### Create A Container
+</details>
 
-  ![1770638361588](image/README/1770638361588.png)
+<details>
+<summary><h3>Create A Storage Credential in Databricks</h3></summary>
 
-  ### Create An External Location
+![1770637904308](image/README/1770637904308.png)
 
-  ![1770637951731](image/README/1770637951731.png)
+</details>
 
-  ### Upload the Datasets
+<details>
+<summary><h3>Create A Container</h3></summary>
 
-  ![1770638062683](image/README/1770638062683.png)
+![1770638361588](image/README/1770638361588.png)
+
+</details>
+
+<details>
+<summary><h3>Create An External Location</h3></summary>
+
+![1770637951731](image/README/1770637951731.png)
+
+</details>
+
+<details>
+<summary><h3>Upload the Datasets</h3></summary>
+
+![1770638062683](image/README/1770638062683.png)
 
 </details>
 
