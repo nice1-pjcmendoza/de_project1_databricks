@@ -37,7 +37,25 @@ Cyclistic’s datasets can be downloaded [here](https://divvy-tripdata.s3.amazon
 
 Let's be reminded that Cyclistic is a fictional company that represents a real-world organization. Its datasets are prepared to maintain anonymity. The data has been made available by Motivate International Inc. under this [license](https://divvybikes.com/data-license-agreement).
 
-Pics here!!!
+<details>
+<summary>Here's a quick look of the dataset</summary>
+
+![1771125885457](image/README/1771125885457.png)
+
+**Sample File:** `202501-divvy-tripdata.csv`
+
+**Shape & Structure**
+
+* **Rows × Columns:** **138,689 × 13**. 
+* **Columns**: `ride_id`, `rideable_type`, `started_at`, `ended_at`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `start_lat`, `start_lng`, `end_lat`, `end_lng`, `member_casual`. 
+
+**Data Types**
+
+*   `ride_id`, `rideable_type`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `member_casual` → string
+*   `started_at`, `ended_at` → timestamp
+*   `start_lat`, `start_lng`, `end_lat`, `end_lng` → double 
+
+</details>
 
 
 ## Build the Azure Databricks Infrastructure
@@ -54,9 +72,11 @@ In Databricks' side, we will set up the following components:
 * An **External Location** to reference the container in our storage account.
 
 <details>
-<summary>Step 1: Create the Databricks Workspace</summary>
+<summary>Step 1: Create the Azure Databricks Workspace</summary>
 
 ![1770637481388](image/README/1770637481388.png)
+
+![1771129013988](image/README/1771129013988.png)
 
 </details>
 
@@ -79,12 +99,18 @@ In Databricks' side, we will set up the following components:
 <details>
 <summary>Step 4: Enable Access to the Storage Account</summary>
 
+![1771129212869](image/README/1771129212869.png)
+
+![1771129232625](image/README/1771129232625.png)
+
 ![1770637797073](image/README/1770637797073.png)
 
 </details>
 
 <details>
 <summary>Step 5: Create A Storage Credential in Databricks</summary>
+
+![1771129292579](image/README/1771129292579.png)
 
 ![1770637904308](image/README/1770637904308.png)
 
@@ -99,6 +125,8 @@ In Databricks' side, we will set up the following components:
 
 <details>
 <summary>Step 7: Create An External Location</summary>
+
+![1771129391507](image/README/1771129391507.png)
 
 ![1770637951731](image/README/1770637951731.png)
 
@@ -116,14 +144,14 @@ In Databricks' side, we will set up the following components:
 
 We begin the project by creating a Catalog and Schemas in Databricks. The Catalog is a logical container for databases, and the Schemas are logical containers for tables. This structure allows us to organize our data according to the Medallion Architecture, which consists of the Landing, Bronze, Silver, and Gold layers.
 
-### Create the Catalog cyclistic
+### Create the Catalog *cyclistic*
 
 We create a Catalog named `cyclistic` that will serve as the top-level container for all our data. The `MANAGED LOCATION` points to the root of our storage account (i.e. `deprojectcontainer`), and we will create an external volume in the Landing layer to reference specific folders in our storage account.
 
 ```sql
 CREATE CATALOG IF NOT EXISTS cyclistic 
 MANAGED LOCATION 'abfss://deprojectcontainer@deprojectextdatalake.dfs.core.windows.net/'
-COMMENT 'Catalog for Cyclistic/Divvy';
+COMMENT 'Catalog for the Cyclistic project';
 ```
 
 Let's verify the catalog we just created.
@@ -131,6 +159,9 @@ Let's verify the catalog we just created.
 ```sql
 DESCRIBE CATALOG EXTENDED cyclistic;
 ```
+
+![1771130448904](image/README/1771130448904.png)
+![1771130523306](image/README/1771130523306.png)
 
 ### Create the Schemas
 
@@ -142,9 +173,9 @@ If you want to learn more about the Medallion Architecture, check out this [blog
 USE CATALOG cyclistic;
 
 CREATE SCHEMA IF NOT EXISTS landing COMMENT 'Raw CSV files';
-CREATE SCHEMA IF NOT EXISTS bronze COMMENT 'Raw ingested (lossless)';
-CREATE SCHEMA IF NOT EXISTS silver COMMENT 'Cleansed & conformed';
-CREATE SCHEMA IF NOT EXISTS gold   COMMENT 'Modeled analytics (facts/aggregations)';
+CREATE SCHEMA IF NOT EXISTS bronze COMMENT 'Raw ingested data';
+CREATE SCHEMA IF NOT EXISTS silver COMMENT 'Cleansed, conformed data';
+CREATE SCHEMA IF NOT EXISTS gold   COMMENT 'For analytics (facts, dimensions, aggregations)';
 ```
 
 ## Build the Landing Layer
@@ -159,23 +190,37 @@ The Landing layer is where we will store the raw data files as they are ingested
 USE CATALOG cyclistic;
 USE SCHEMA landing;
 
--- Create an external volume for raw data
-CREATE EXTERNAL VOLUME IF NOT EXISTS divvy_trip_data
+CREATE EXTERNAL VOLUME IF NOT EXISTS cyclistic_data
 LOCATION 'abfss://deprojectcontainer@deprojectextdatalake.dfs.core.windows.net/divvy_trip_data/'
-COMMENT 'External volume for raw data';
+COMMENT 'External volume for cyclistic raw data';
 ```
 
 ### Verify the External Volume
 
 ```sql
-DESCRIBE EXTERNAL VOLUME cyclistic.landing.divvy_trip_data;
+DESCRIBE VOLUME cyclistic.landing.cyclistic_data;
 ```
 
-### Retrieve the VOLUME_PATH for the Bronze Layer Ingestion Script
+### Retrieve the Volume Directory for the Bronze Layer Ingestion Script
 
 ```sql
-SELECT VOLUME_PATH FROM SYSTEM.VOLUMES WHERE VOLUME_NAME = 'divvy_trip_data';
+SELECT CONCAT('/Volumes/', volume_catalog, '/', volume_schema, '/', volume_name, '/') AS volume_path
+FROM information_schema.volumes 
+WHERE volume_name = 'cyclistic_data';
 ```
+
+![1771131416439](image/README/1771131416439.png)
+
+### List Files in cyclistic_data Volume
+
+```sql
+LIST '/Volumes/cyclistic/landing/cyclistic_data/';
+```
+
+![1771131629894](image/README/1771131629894.png)
+
+![1771130939797](image/README/1771130939797.png)
+
 
 ## Build the Bronze Layer
 
@@ -188,35 +233,7 @@ We wll also add ingestion metadata columns to track the source file and ingestio
 
 ### Analyze the Dataset
 
-<details>
-<summary><h3>Quick Overview of the Dataset</h3></summary>
-
-**Sample File:** `202501-divvy-tripdata.csv`
-
-**Shape & Structure**
-
-*   **Rows × Columns:** **138,689 × 13**. Columns: `ride_id`, `rideable_type`, `started_at`, `ended_at`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `start_lat`, `start_lng`, `end_lat`, `end_lng`, `member_casual`. 
-
-**Data Types**
-
-*   `ride_id`, `rideable_type`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `member_casual` → string
-*   `started_at`, `ended_at` → timestamp
-*   `start_lat`, `start_lng`, `end_lat`, `end_lng` → double 
-
-**Data Quality Highlights**
-
-*   **Duplicate `ride_id`:** 0. 
-*   **Nulls:** `start_station_*` missing **22,852** rows; `end_station_*` missing **24,073** rows; `end_lat/end_lng` missing **61** rows. 
-*   **Durations:** computed duration\_secs > 0 for all; **0** negative or zero durations in this sample. 
-*   **Geo validation:** **61** rows have out‑of‑range/missing lat/lng on at least one end. 
-*   **Self‑loops:** \~**2,704** same station id; \~**5,275** same coordinates. Useful for QA or business rules. 
-*   **Haversine distance (km):** median \~**1.29 km**, 90th **3.65 km**, 99th **7.90 km**, max **32.83 km**; >50 km **0** rows. 
-*   **Member mix:** **114,536** member (82.6%) vs **24,153** casual (17.4%). 
-*   **Rideable types:** **89,071** electric vs **49,618** classic. 
-*   **Temporal:** peaks around **16:00–18:00**; midweek busier; **53** trips start in Dec 2024 (cross‑month edge case). 
-*   **Top stations (sample):** “Kingsbury St & Kinzie St”, “Canal St & Madison St”, “Clinton St & Washington Blvd” rank high for start/end. 
-
-</details>
+Pics!!!
 
 
 ### Create DDL for the *trips_raw* Table
@@ -244,6 +261,7 @@ CREATE TABLE IF NOT EXISTS trips_raw (
   _ingest_file       STRING,
   _ingest_ts         TIMESTAMP
 )
+COMMENT 'Raw Cyclistic data stored as Delta';
 ```
 
 
@@ -251,7 +269,7 @@ CREATE TABLE IF NOT EXISTS trips_raw (
 
 Here we will load the raw CSV files into the Bronze Delta table using the `COPY INTO` command. This command is efficient and handles schema evolution. The COPY INTO command is **idempotent**, meaning it can be run multiple times without duplicating data, as it tracks which files have already been loaded.
 
-Note: Adjust the file path in the `FROM` clause to match the location of your raw data files.
+Note: Adjust the volume path in the `FROM` clause to match the location of your raw data files.
 
 ```sql
 COPY INTO trips_raw
@@ -272,12 +290,14 @@ FROM (
     member_casual,
     _metadata.file_name       AS _ingest_file,
     current_timestamp()       AS _ingest_ts
-  FROM '/Volumes/cyclistic/landing/divvy_trip_data'
+  FROM '/Volumes/cyclistic/landing/cyclistic_data/'
 )
 FILEFORMAT = CSV
 FORMAT_OPTIONS ('header' = 'true', 'multiLine'='false')
 COPY_OPTIONS ('mergeSchema'='true');  -- safe for extra cols in future
 ```
+
+![1771132312066](image/README/1771132312066.png)
 
 ## Build the Silver Layer
 
@@ -420,6 +440,8 @@ Optional performance tuning using `ZORDER`. The `OPTIMIZE` command reorganizes t
 OPTIMIZE trips_clean ZORDER BY (ride_date, member_casual, start_station_id);
 ```
 
+![1771132945867](image/README/1771132945867.png)
+
 ## Build the Gold Layer
 
 The Gold layer is where we will store the modeled data that is optimized for analytics and reporting. This layer typically contains fact and dimension tables, as well as pre-aggregated tables for common queries. 
@@ -477,7 +499,6 @@ WHERE COALESCE(start_station_id, end_station_id) IS NOT NULL;
  We create the `daily_kpis` table to store key performance indicators (KPIs) such as the number of trips, average duration, and average distance, aggregated by `ride_date`, `member_casual`, and `rideable_type`. This pre-aggregated table will allow us to quickly analyze trends and patterns in bike usage across different user types and bike types over time.
 
 ```sql
--- Aggregates
 CREATE OR REPLACE TABLE daily_kpis AS
 SELECT
   ride_date,
@@ -504,6 +525,15 @@ GROUP BY ride_date, ride_hour, start_station_id;
 
 OPTIMIZE daily_kpis ZORDER BY (ride_date);
 ```
+
+![1771133588428](image/README/1771133588428.png)
+
+![1771133613472](image/README/1771133613472.png)
+
+![1771133654807](image/README/1771133654807.png)
+
+![1771133688392](image/README/1771133688392.png)
+
 
 ## Wrap Up
 
