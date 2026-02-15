@@ -15,14 +15,12 @@ This project will cover the following key areas:
 
 ## Understand the Business Requirements
 
-The director of marketing team believes Cyclistic's future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently. 
-
-From these insights, your team will design a new marketing strategy to convert casual riders into annual members. But first, Cyclistic executives must approve your recommendations, so they must be backed up with compelling data insights and professional data visualizations. 
+The director of marketing team believes Cyclistic's future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently. From these insights, the Marketing team will design a new marketing strategy to convert casual riders into members.
 
 Determine how MEMBERS and CASUAL users use Cyclistic bikes differently. Specifically:
 1. Analyze the data and identify trends and patterns,
 2. Create visualizations, and
-3. Provide key findings and recommendations. 
+3. Provide key findings and recommendations.
 
 Let's ask the **SMART** questions.
 
@@ -39,6 +37,8 @@ Cyclistic’s datasets can be downloaded [here](https://divvy-tripdata.s3.amazon
 
 Let's be reminded that Cyclistic is a fictional company that represents a real-world organization. Its datasets are prepared to maintain anonymity. The data has been made available by Motivate International Inc. under this [license](https://divvybikes.com/data-license-agreement).
 
+Pics here!!!
+
 
 ## Build the Azure Databricks Infrastructure
 
@@ -49,9 +49,9 @@ To build the infrastructure for this project, we will need to set up the followi
 * A **Storage Account** to store our raw and processed data.
 * A **Container** in the storage account to organize our data.
 
-In Databricks, we will set up the following components:
-* A **Storage Credential** in Databricks to access the storage account.
-* An **External Location** in Databricks to reference the container in our storage account.
+In Databricks' side, we will set up the following components:
+* A **Storage Credential** to access the storage account.
+* An **External Location** to reference the container in our storage account.
 
 <details>
 <summary>Step 1: Create the Databricks Workspace</summary>
@@ -114,7 +114,11 @@ In Databricks, we will set up the following components:
 
 ## Build the Catalog & Schemas
 
+We begin the project by creating a Catalog and Schemas in Databricks. The Catalog is a logical container for databases, and the Schemas are logical containers for tables. This structure allows us to organize our data according to the Medallion Architecture, which consists of the Landing, Bronze, Silver, and Gold layers.
+
 ### Create the Catalog cyclistic
+
+We create a Catalog named `cyclistic` that will serve as the top-level container for all our data. The `MANAGED LOCATION` points to the root of our storage account (i.e. `deprojectcontainer`), and we will create an external volume in the Landing layer to reference specific folders in our storage account.
 
 ```sql
 CREATE CATALOG IF NOT EXISTS cyclistic 
@@ -348,7 +352,7 @@ RETURN 2*6371*asin(sqrt(
 ));
 ```
 
-### Cleanse, Transform and Load Data
+### Transform and Load Data
 
 The Transform process is probably the most exciting part of this project. It is where we apply the data quality checks and transformations to cleanse the data.
 
@@ -399,7 +403,9 @@ WHEN MATCHED THEN UPDATE SET *
 WHEN NOT MATCHED THEN INSERT *;
 ```
 
-Add Silver-level data quality constraints (fail-fast or informative). This is a simple way to enforce data quality rules at the table level. The `TBLPROPERTIES` can be used to document the quality checks that are applied to the data in the Silver layer. This can serve as a reference for data engineers and analysts who work with the data, and it can also be used by automated data quality monitoring tools.
+Add data quality constraints. This is a simple way to enforce data quality rules at the table level. The `TBLPROPERTIES` can be used to document the quality checks that are applied to the data in the Silver layer. This can serve as a reference for data engineers and analysts who work with the data, and it can also be used by automated data quality monitoring tools. 
+
+If the data violates any of the specified quality rules, it can trigger alerts or prevent the data from being used in downstream processes, ensuring that only high-quality data is available for analysis and reporting.
 
 ```sql
 ALTER TABLE trips_clean SET TBLPROPERTIES (
@@ -414,17 +420,50 @@ Optional performance tuning using `ZORDER`. The `OPTIMIZE` command reorganizes t
 OPTIMIZE trips_clean ZORDER BY (ride_date, member_casual, start_station_id);
 ```
 
-## Build Gold Layer
+## Build the Gold Layer
+
+The Gold layer is where we will store the modeled data that is optimized for analytics and reporting. This layer typically contains fact and dimension tables, as well as pre-aggregated tables for common queries. 
+
+In this project, we will create a fact table for the trips and a dimension table for the stations. We will also create some pre-aggregated tables to support common queries and KPIs.
+
+### Create the Fact Table
+
+The fact table is designed to support analytics on bike trips, allowing us to analyze patterns and trends in bike usage across different user types, bike types, and time periods. 
+
+We create the fact table `fact_trips` using CTAS (Create Table As Select) to select data from the Silver layer (`trips_clean`) and store it in a new Delta table in the Gold layer. We also partition the table by `ride_date` to optimize query performance for time-based analyses, which are common in this use case. Finally, we apply ZORDERing to further optimize query performance for common filter columns.
 
 ```sql
 USE CATALOG cyclistic;
 USE SCHEMA gold;
+
+CREATE TABLE IF NOT EXISTS fact_trips
+USING DELTA
+PARTITIONED BY (ride_date)
+AS
+SELECT
+  ride_id, 
+  ride_date, 
+  ride_hour, 
+  member_casual, 
+  rideable_type, 
+  start_station_id, 
+  end_station_id,
+  duration_sec, 
+  duration_min, 
+  distance_km, 
+  is_self_loop
+FROM cyclistic.silver.trips_clean;
+
+OPTIMIZE fact_trips ZORDER BY (member_casual, rideable_type);
 ```
 
-### Create the Fact and Dimension Tables
+### Create the Dimension Table
+
+The dimension table is designed to provide descriptive information about the stations, allowing us to analyze bike usage patterns based on station locations and names.
+
+We create the dimension table `dim_station` by selecting distinct station IDs and names from the Silver layer (`trips_clean`). We use `COALESCE` to handle cases where a station may only appear as a start or end station, ensuring that we capture all unique stations in our dimension table.
 
 ```sql
--- Dimensions: List of Stations
 CREATE OR REPLACE TABLE dim_station AS
 SELECT DISTINCT
   COALESCE(start_station_id, end_station_id) AS station_id,
@@ -433,25 +472,9 @@ FROM cyclistic.silver.trips_clean
 WHERE COALESCE(start_station_id, end_station_id) IS NOT NULL;
 ```
 
-```sql
--- Fact (can be kept narrow; we already have Silver with clean columns)
-CREATE TABLE IF NOT EXISTS fact_trips
-USING DELTA
-PARTITIONED BY (ride_date)
-AS
-SELECT
-  ride_id, ride_date, ride_hour,
-  member_casual, rideable_type,
-  start_station_id, end_station_id,
-  duration_sec, duration_min, distance_km, is_self_loop
-FROM cyclistic.silver.trips_clean;
-
--- Perf tune
-OPTIMIZE fact_trips ZORDER BY (member_casual, rideable_type);
-```
-
-
 ### Create the KPIs and Metrics
+
+ We create the `daily_kpis` table to store key performance indicators (KPIs) such as the number of trips, average duration, and average distance, aggregated by `ride_date`, `member_casual`, and `rideable_type`. This pre-aggregated table will allow us to quickly analyze trends and patterns in bike usage across different user types and bike types over time.
 
 ```sql
 -- Aggregates
@@ -465,7 +488,11 @@ SELECT
   ROUND(AVG(distance_km),3)     AS avg_distance_km
 FROM cyclistic.silver.trips_clean
 GROUP BY ride_date, member_casual, rideable_type;
+```
 
+We create the `station_hourly` table to analyze the number of departures from each station on an hourly basis. This will help us understand station-level usage patterns and identify peak hours for bike departures.
+
+```sql
 CREATE OR REPLACE TABLE station_hourly AS
 SELECT
   ride_date,
@@ -475,7 +502,6 @@ SELECT
 FROM cyclistic.silver.trips_clean
 GROUP BY ride_date, ride_hour, start_station_id;
 
--- Perf tune
 OPTIMIZE daily_kpis ZORDER BY (ride_date);
 ```
 
@@ -485,9 +511,10 @@ OPTIMIZE daily_kpis ZORDER BY (ride_date);
 
 ## 🌟 About Me
 
-Hi there! I'm **Paul Joseph Mendoza**. I’m an IT professional and passionate YouTuber on a mission to share knowledge and make working with data enjoyable and engaging!
+Hello! I'm **Paul Joseph Mendoza**, a junior data engineer with a love for building new stuff and uncovering the stories hidden within data. As a career shifter, I transitioned into data engineering after discovering my passion for working with data and solving complex problems. I have a strong proficiency in SQL, Python, Excel, Power BI, and cloud platforms like Azure and AWS. I'm always eager to learn new technologies and build data engineering projects. 
 
-Let's stay in touch! Feel free to connect with me on the following platforms:
+When I'm not working on data projects, I spend my time reading (I'm into Stephen King books right now), walking around Cebu City with my wife, and napping (Yeah, this is the best). Let's stay in touch! Feel free to connect with me on LinkedIn or check out my GitHub profile for more projects coming soooon.
+
+[![GitHub]](https://github.com/nice1-pjcmendoza)
 
 [![LinkedIn]](https://www.linkedin.com/in/paul-joseph-mendoza/)
-[![Website]](https://www.datawithbaraa.com)
