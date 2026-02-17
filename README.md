@@ -13,7 +13,7 @@ This project will cover the following key areas:
 - Perform data analytics and derive insights
 
 
-## Understand the Business Requirements
+## 📝 Understand the Business Requirements
 
 The director of marketing team believes Cyclistic's future success depends on maximizing the number of annual memberships. Therefore, your team wants to understand how casual riders and annual members use Cyclistic bikes differently. From these insights, the Marketing team will design a new marketing strategy to convert casual riders into members.
 
@@ -31,18 +31,19 @@ Let's ask the **SMART** questions.
 * **Time-bound**. What trends can we observe from different short-term time periods?
 
 
-## Explore the Cyclistic Dataset
+## 🔍 Explore the Cyclistic Dataset
 
 Cyclistic’s datasets can be downloaded [here](https://divvy-tripdata.s3.amazonaws.com/index.html). This case study covers the 2025 data available in the repository. The files are first-party datasets owned, prepared and shared by Cyclistic with file naming format ‘YYYYMM-divvy-tripdata.csv’.
 
 Let's be reminded that Cyclistic is a fictional company that represents a real-world organization. Its datasets are prepared to maintain anonymity. The data has been made available by Motivate International Inc. under this [license](https://divvybikes.com/data-license-agreement).
 
 <details>
-<summary>Here's a quick look of the dataset</summary>
+<summary>👉 Here's a quick look of the dataset</summary>
 
-![1771125885457](image/README/1771125885457.png)
 
 **Sample File** : `202501-divvy-tripdata.csv`
+
+![1771125885457](image/README/1771125885457.png)
 
 **Shape & Structure**
 
@@ -58,7 +59,7 @@ Let's be reminded that Cyclistic is a fictional company that represents a real-w
 </details>
 
 
-## Build the Azure Databricks Infrastructure
+## 🛠️ Build the Azure Databricks Infrastructure
 
 To build the infrastructure for this project, we will need to set up the following components in Azure:
 
@@ -72,7 +73,7 @@ In Databricks' side, we will set up the following components:
 * An **External Location** to reference the container in our storage account.
 
 <details>
-<summary>Step 1: Create the Azure Databricks Workspace</summary>
+<summary>Step 1️⃣ : Create the Azure Databricks Workspace</summary>
 
 Search for "*Azure Databricks*" in the search bar, click on *Create*, and fill in the required details such as subscription, resource group, workspace name, region, and pricing tier.
 
@@ -87,7 +88,7 @@ Click the *Launch Workspace* button to open the Databricks UI.
 </details>
 
 <details>
-<summary>Step 2: Create an Access Connector</summary>
+<summary>Step 2️⃣ : Create an Access Connector</summary>
 
 Search for "*Access Connector for Azure Databricks*" in the search bar, click on *Create*, and fill in the required details and the Databricks workspace you just created.
 
@@ -102,7 +103,7 @@ Take note of the **Resource ID** of the Access Connector as we will need it in S
 </details>
 
 <details>
-<summary>Step 3: Create the Storage Account</summary>
+<summary>Step 3️⃣ : Create the Storage Account</summary>
 
 Search for "*Storage Account*" in the search bar, click on *Create*, and fill in the required details.
 
@@ -113,7 +114,7 @@ Here we created the `deprojectextdatalake` storage account in the East US region
 </details>
 
 <details>
-<summary>Step 4: Enable Access to the Storage Account</summary>
+<summary>Step 4️⃣ : Enable Access to the Storage Account</summary>
 
 Let's enable access to the storage account by adding the Access Connector we created in Step 2 to the Storage Account's IAM settings.
 
@@ -134,7 +135,7 @@ Here we can see the role *Storage Blob Data Contributor* has been assigned to `d
 </details>
 
 <details>
-<summary>Step 5: Create A Storage Credential in Databricks</summary>
+<summary>Step 5️⃣ : Create A Storage Credential in Databricks</summary>
 
 Let's now head to the Databricks UI to create a Storage Credential that will allow us to access the Storage Account from Databricks.
 
@@ -151,7 +152,7 @@ Here we created the `de_project_ext_storage_credential` storage credential.
 </details>
 
 <details>
-<summary>Step 6: Create A Container</summary>
+<summary>Step 6️⃣ : Create A Container</summary>
 
 Lets go back to the Azure Portal and create a container in the Storage Account to contain our raw data. 
 
@@ -164,7 +165,7 @@ Here we created a container named `deprojectcontainer`.
 </details>
 
 <details>
-<summary>Step 7: Create An External Location</summary>
+<summary>Step 7️⃣ : Create An External Location</summary>
 
 Let's now create an External Location in Databricks that references the container we just created in Step 6. This will allow us to access the data in the container from Databricks. 
 
@@ -184,7 +185,7 @@ Here we created the `de_project_ext_location` External Location.
 </details>
 
 <details>
-<summary>Step 8: Upload the Datasets</summary>
+<summary>Step 8️⃣ : Upload the Datasets</summary>
 
 Finally, let's upload the raw CSV files to the container in our Storage Account.
 
@@ -193,7 +194,7 @@ Finally, let's upload the raw CSV files to the container in our Storage Account.
 </details>
 
 
-## Build the Catalog & Schemas
+## 🗂️ Build the Catalog & Schemas
 
 We begin the project by creating a Catalog and Schemas in Databricks. The Catalog is a logical container for databases, and the Schemas are logical containers for tables. This structure allows us to organize our data according to the Medallion Architecture, which consists of the Landing, Bronze, Silver, and Gold layers.
 
@@ -242,7 +243,7 @@ CREATE SCHEMA IF NOT EXISTS silver COMMENT 'Cleansed, conformed data';
 CREATE SCHEMA IF NOT EXISTS gold   COMMENT 'For analytics (facts, dimensions, aggregations)';
 ```
 
-## Build the Landing Layer
+## 📦 Build the Landing Layer
 
 The Landing layer is where we will store the raw data files as they are ingested from the external source. Here we will create an external volume that points to the location of the raw data files in our Azure Storage Account.
 
@@ -302,7 +303,7 @@ You can also view it in the Databricks UI:
 </details>
 
 
-## Build the Bronze Layer
+## 🥉 Build the Bronze Layer
 
 The Bronze layer is where we will store the raw ingested data in a Delta table format. This layer serves as the foundation for further data processing and cleansing.
 
@@ -387,7 +388,7 @@ Here's the output from Databricks:
 </details>
 
 
-## Build the Silver Layer
+## 🥈 Build the Silver Layer
 
 The Silver layer is where we will store the cleansed and conformed data. This layer is optimized for analytics and reporting.
 
@@ -538,7 +539,7 @@ Here's the output from Databricks:
 </details>
 
 
-## Build the Gold Layer
+## 🥇 Build the Gold Layer
 
 The Gold layer is where we will store the modeled data that is optimized for analytics and reporting. This layer typically contains fact and dimension tables, as well as pre-aggregated tables for common queries. 
 
@@ -638,11 +639,11 @@ Here's the output from Databricks:
 </details>
 
 
-## Wrap Up
+## 🚀 Wrap Up
 
 
 
-## 🌟 About Me
+## 👨‍💻 About Me
 
 Hello! I'm **Paul Joseph Mendoza**, a junior data engineer with a love for building new stuff and uncovering the stories hidden within data. As a career shifter, I transitioned into data engineering after discovering my passion for working with data and solving complex problems. I have a strong proficiency in SQL, Python, Excel, Power BI, and cloud platforms like Azure and AWS. I'm always eager to learn new technologies and build data engineering projects. 
 
