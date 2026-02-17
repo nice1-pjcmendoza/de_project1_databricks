@@ -1,4 +1,4 @@
-## 🛠️ Build the Azure Databricks Infrastructure
+# 🛠️ Build the Azure Databricks Infrastructure
 
 To build the infrastructure for this project, we will need to set up the following components in Azure:
 
@@ -11,7 +11,7 @@ In Databricks' side, we will set up the following components:
 * A **Storage Credential** to access the storage account.
 * An **External Location** to reference the container in our storage account.
 
-Step 1️⃣ : Create the Azure Databricks Workspace
+## Step 1️⃣ : Create the Azure Databricks Workspace
 
 Search for "*Azure Databricks*" in the search bar, click on *Create*, and fill in the required details such as subscription, resource group, workspace name, region, and pricing tier.
 
@@ -23,7 +23,7 @@ Click the *Launch Workspace* button to open the Databricks UI.
 
 ![1771318828105](image/1_build_the_infrastructure/1771318828105.png)
 
-Step 2️⃣ : Create an Access Connector
+## Step 2️⃣ : Create an Access Connector
 
 Search for "*Access Connector for Azure Databricks*" in the search bar, click on *Create*, and fill in the required details and the Databricks workspace you just created.
 
@@ -35,7 +35,7 @@ Take note of the **Resource ID** of the Access Connector as we will need it in S
 
 ![1771318922921](image/1_build_the_infrastructure/1771318922921.png)
 
-Step 3️⃣ : Create the Storage Account
+## Step 3️⃣ : Create the Storage Account
 
 Search for "*Storage Account*" in the search bar, click on *Create*, and fill in the required details.
 
@@ -43,7 +43,7 @@ Here we created the `deprojectextdatalake` storage account in the East US region
 
 ![1771318935623](image/1_build_the_infrastructure/1771318935623.png)
 
-Step 4️⃣ : Enable Access to the Storage Account
+## Step 4️⃣ : Enable Access to the Storage Account
 
 Let's enable access to the storage account by adding the Access Connector we created in Step 2 to the Storage Account's IAM settings.
 
@@ -61,7 +61,7 @@ Here we can see the role *Storage Blob Data Contributor* has been assigned to `d
 
 ![1771319046052](image/1_build_the_infrastructure/1771319046052.png)
 
-Step 5️⃣ : Create A Storage Credential in Databricks
+## Step 5️⃣ : Create A Storage Credential in Databricks
 
 Let's now head to the Databricks UI to create a Storage Credential that will allow us to access the Storage Account from Databricks.
 
@@ -75,7 +75,7 @@ Here we created the `de_project_ext_storage_credential` storage credential.
 
 ![1771319105431](image/1_build_the_infrastructure/1771319105431.png)
 
-Step 6️⃣ : Create A Container
+## Step 6️⃣ : Create A Container
 
 Lets go back to the Azure Portal and create a container in the Storage Account to contain our raw data. 
 
@@ -85,7 +85,7 @@ Here we created a container named `deprojectcontainer`.
 
 ![1771319121053](image/1_build_the_infrastructure/1771319121053.png)
 
-Step 7️⃣ : Create An External Location
+## Step 7️⃣ : Create An External Location
 
 Let's now create an External Location in Databricks that references the container we just created in Step 6. This will allow us to access the data in the container from Databricks. 
 
@@ -102,7 +102,7 @@ Here we created the `de_project_ext_location` External Location.
 
 ![1771319139540](image/1_build_the_infrastructure/1771319139540.png)
 
-Step 8️⃣ : Upload the Datasets
+## Step 8️⃣ : Upload the Datasets
 
 Finally, let's upload the raw CSV files to the container in our Storage Account.
 
