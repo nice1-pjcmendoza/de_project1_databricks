@@ -126,10 +126,16 @@ Here we created a folder `divvy_trip_data` in the `deprojectcontainer` and uploa
 
 Verify that everything is set up correctly. We can run a simple query in Databricks to read the data from the External Location.
 
-In the Databricks SQL editor, run the query below to `LIST` all the files in the `divvy_trip_data` folder.
+In the Databricks SQL Editor, run the query below to `LIST` all the files in the `divvy_trip_data` folder.
 
 ```sql
 LIST 'abfss://deprojectcontainer@deprojectextdatalake.dfs.core.windows.net/divvy_trip_data/'
 ```
 
-If the query runs successfully and returns data, then we have successfully set up the Azure Databricks infrastructure and can proceed to the next steps of building the Catalog, Schemas, and Layers.
+Here's the output from the query.
+
+![1771328947114](image/1_build_the_infrastructure/1771328947114.png)
+
+If the query runs successfully and returns data, then we have successfully set up the Azure Databricks infrastructure and can proceed to the next steps of building the Catalog, Schemas, and Layers. 
+
+Hooray! 🥳

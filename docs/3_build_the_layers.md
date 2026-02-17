@@ -40,7 +40,7 @@ WHERE volume_name = 'cyclistic_data';
 
 Here's the output from Databricks:
 
-![1771131416439](image/README/1771131416439.png)
+![1771329515724](image/3_build_the_layers/1771329515724.png)
 
 </details>
 
@@ -55,11 +55,11 @@ LIST '/Volumes/cyclistic/landing/cyclistic_data/';
 
 Here's the output from Databricks:
 
-![1771131629894](image/README/1771131629894.png)
+![1771329535447](image/3_build_the_layers/1771329535447.png)
 
 You can also view it in the Databricks UI:
 
-![1771130939797](image/README/1771130939797.png)
+![1771329571158](image/3_build_the_layers/1771329571158.png)
 
 </details>
 
@@ -144,7 +144,7 @@ COPY_OPTIONS ('mergeSchema'='true');  -- safe for extra cols in future
 
 Here's the output from Databricks:
 
-![1771132312066](image/README/1771132312066.png)
+![1771329593679](image/3_build_the_layers/1771329593679.png)
 
 </details>
 
@@ -295,7 +295,7 @@ OPTIMIZE trips_clean ZORDER BY (ride_date, member_casual, start_station_id);
 
 Here's the output from Databricks:
 
-![1771132945867](image/README/1771132945867.png)
+![1771329615737](image/3_build_the_layers/1771329615737.png)
 
 </details>
 
@@ -389,12 +389,12 @@ OPTIMIZE daily_kpis ZORDER BY (ride_date);
 
 Here's the output from Databricks:
 
-![1771133588428](image/README/1771133588428.png)
+![1771329633856](image/3_build_the_layers/1771329633856.png)
 
-![1771133613472](image/README/1771133613472.png)
+![1771329650032](image/3_build_the_layers/1771329650032.png)
 
-![1771133654807](image/README/1771133654807.png)
+![1771329662518](image/3_build_the_layers/1771329662518.png)
 
-![1771133688392](image/README/1771133688392.png)
+![1771329673287](image/3_build_the_layers/1771329673287.png)
 
 </details>

@@ -108,6 +108,7 @@ Check out the documentation here 👉 [Build the Landing, Bronze, Silver & Gold 
 
 
 
+Check out the documentation here 👉 [Exploratory Data Analysis & Visualization](docs/4_eda_viz.md)
 
 ## 🚀 Wrap Up
 
@@ -133,3 +134,8 @@ Let's stay in touch! Feel free to connect with me on LinkedIn or check out my Gi
 
 [LinkedIn](https://www.linkedin.com/in/paul-joseph-mendoza/)
 
+![1771329765838](image/README/1771329765838.png) 
+
+![1771329782128](image/README/1771329782128.png)
+
+![1771329830562](image/README/1771329830562.png)
