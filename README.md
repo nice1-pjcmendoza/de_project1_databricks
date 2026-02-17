@@ -42,18 +42,18 @@ Let's be reminded that Cyclistic is a fictional company that represents a real-w
 
 ![1771125885457](image/README/1771125885457.png)
 
-**Sample File:** `202501-divvy-tripdata.csv`
+**Sample File** : `202501-divvy-tripdata.csv`
 
 **Shape & Structure**
 
-* **Rows × Columns:** **138,689 × 13**. 
-* **Columns**: `ride_id`, `rideable_type`, `started_at`, `ended_at`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `start_lat`, `start_lng`, `end_lat`, `end_lng`, `member_casual`. 
+* **Rows × Columns** : 138,689 × 13
+* **Columns** : `ride_id`, `rideable_type`, `started_at`, `ended_at`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `start_lat`, `start_lng`, `end_lat`, `end_lng`, `member_casual`
 
 **Data Types**
 
-*   `ride_id`, `rideable_type`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `member_casual` → string
-*   `started_at`, `ended_at` → timestamp
-*   `start_lat`, `start_lng`, `end_lat`, `end_lng` → double 
+* **STRING** : `ride_id`, `rideable_type`, `start_station_name`, `start_station_id`, `end_station_name`, `end_station_id`, `member_casual`
+* **TIMESTAMP** : `started_at`, `ended_at`
+* **DOUBLE** : `start_lat`, `start_lng`, `end_lat`, `end_lng`
 
 </details>
 
@@ -74,7 +74,13 @@ In Databricks' side, we will set up the following components:
 <details>
 <summary>Step 1: Create the Azure Databricks Workspace</summary>
 
+Search for "*Azure Databricks*" in the search bar, click on *Create*, and fill in the required details such as subscription, resource group, workspace name, region, and pricing tier.
+
+Here we created the `de_project_workspace` in the East US region with the standard pricing tier.
+
 ![1770637481388](image/README/1770637481388.png)
+
+Click the *Launch Workspace* button to open the Databricks UI.
 
 ![1771129013988](image/README/1771129013988.png)
 
@@ -83,7 +89,13 @@ In Databricks' side, we will set up the following components:
 <details>
 <summary>Step 2: Create an Access Connector</summary>
 
+Search for "*Access Connector for Azure Databricks*" in the search bar, click on *Create*, and fill in the required details and the Databricks workspace you just created.
+
+Here we created the `de_project_ext_access_connector` in the East US region.
+
 ![1770637584703](image/README/1770637584703.png)
+
+Take note of the **Resource ID** of the Access Connector as we will need it in Step 5.
 
 ![1770637630239](image/README/1770637630239.png)
 
@@ -92,6 +104,10 @@ In Databricks' side, we will set up the following components:
 <details>
 <summary>Step 3: Create the Storage Account</summary>
 
+Search for "*Storage Account*" in the search bar, click on *Create*, and fill in the required details.
+
+Here we created the `deprojectextdatalake` storage account in the East US region with the standard performance.
+
 ![1770637685309](image/README/1770637685309.png)
 
 </details>
@@ -99,9 +115,19 @@ In Databricks' side, we will set up the following components:
 <details>
 <summary>Step 4: Enable Access to the Storage Account</summary>
 
+Let's enable access to the storage account by adding the Access Connector we created in Step 2 to the Storage Account's IAM settings.
+
+In the *Access Control (IAM)* settings of the Storage Account `deprojectextdatalake`, add a new role assignment with the following details:
+* **Role**: Storage Blob Data Contributor
+* **Principal**: Select the Access Connector `de_project_ext_access_connector`.
+
 ![1771129212869](image/README/1771129212869.png)
 
+Search for the *Storage Blob Data Contributor* role and select it.
+
 ![1771129232625](image/README/1771129232625.png)
+
+Here we can see the role *Storage Blob Data Contributor* has been assigned to `de_project_ext_access_connector`.
 
 ![1770637797073](image/README/1770637797073.png)
 
@@ -110,7 +136,15 @@ In Databricks' side, we will set up the following components:
 <details>
 <summary>Step 5: Create A Storage Credential in Databricks</summary>
 
+Let's now head to the Databricks UI to create a Storage Credential that will allow us to access the Storage Account from Databricks.
+
+In the Catalog Explorer, navigate to *Data* > *Create* > *Storage Credential* and fill in the required details.
+
+Copy the **Resource ID** of the Access Connector you created in Step 2 and paste it in the *Access connection ID* field.
+
 ![1771129292579](image/README/1771129292579.png)
+
+Here we created the `de_project_ext_storage_credential` storage credential.
 
 ![1770637904308](image/README/1770637904308.png)
 
@@ -119,6 +153,12 @@ In Databricks' side, we will set up the following components:
 <details>
 <summary>Step 6: Create A Container</summary>
 
+Lets go back to the Azure Portal and create a container in the Storage Account to contain our raw data. 
+
+In the *Containers* section of the `deprojectextdatalake` Storage Account, click on *Add container* and provide the container name.
+
+Here we created a container named `deprojectcontainer`.
+
 ![1770638361588](image/README/1770638361588.png)
 
 </details>
@@ -126,7 +166,18 @@ In Databricks' side, we will set up the following components:
 <details>
 <summary>Step 7: Create An External Location</summary>
 
-![1771129391507](image/README/1771129391507.png)
+Let's now create an External Location in Databricks that references the container we just created in Step 6. This will allow us to access the data in the container from Databricks. 
+
+We can create an External Location programmatically using the DDL statement below. We'll reference the `deprojectcontainer` Container in the `deprojectextdatalake` Storage Account using the `abfss` protocol, which is used for accessing Azure Data Lake Storage Gen2. Specify the `de_project_ext_storage_credential` Storage Credential we created in Step 5 to authenticate our access to the Storage Account.
+
+```sql
+CREATE EXTERNAL LOCATION IF NOT EXISTS de_project_ext_location
+URL 'abfss://deprojectcontainer@deprojectextdatalake.dfs.core.windows.net/'
+WITH (STORAGE_CREDENTIAL de_project_ext_storage_credential)
+COMMENT 'External location for the de_project';
+```
+
+Here we created the `de_project_ext_location` External Location.
 
 ![1770637951731](image/README/1770637951731.png)
 
@@ -134,6 +185,8 @@ In Databricks' side, we will set up the following components:
 
 <details>
 <summary>Step 8: Upload the Datasets</summary>
+
+Finally, let's upload the raw CSV files to the container in our Storage Account.
 
 ![1770638062683](image/README/1770638062683.png)
 
@@ -146,7 +199,7 @@ We begin the project by creating a Catalog and Schemas in Databricks. The Catalo
 
 ### Create the Catalog *cyclistic*
 
-We create a Catalog named `cyclistic` that will serve as the top-level container for all our data. The `MANAGED LOCATION` points to the root of our storage account (i.e. `deprojectcontainer`), and we will create an external volume in the Landing layer to reference specific folders in our storage account.
+We create a Catalog `cyclistic` that will serve as the top-level container for all our data. The `MANAGED LOCATION` points to the root of our storage account (i.e. `deprojectcontainer`), and we will create an external volume in the Landing layer to reference specific folders in our storage account.
 
 ```sql
 CREATE CATALOG IF NOT EXISTS cyclistic 
@@ -160,8 +213,19 @@ Let's verify the catalog we just created.
 DESCRIBE CATALOG EXTENDED cyclistic;
 ```
 
+<details>
+<summary>View images here</summary>
+
+Here's the output from Databricks:
+
 ![1771130448904](image/README/1771130448904.png)
+
+You can also view its properties in the Databricks UI:
+
 ![1771130523306](image/README/1771130523306.png)
+
+</details>
+
 
 ### Create the Schemas
 
@@ -209,7 +273,14 @@ FROM information_schema.volumes
 WHERE volume_name = 'cyclistic_data';
 ```
 
+<details>
+<summary>View images here</summary>
+
+Here's the output from Databricks:
+
 ![1771131416439](image/README/1771131416439.png)
+
+</details>
 
 ### List Files in cyclistic_data Volume
 
@@ -217,9 +288,18 @@ WHERE volume_name = 'cyclistic_data';
 LIST '/Volumes/cyclistic/landing/cyclistic_data/';
 ```
 
+<details>
+<summary>View images here</summary>
+
+Here's the output from Databricks:
+
 ![1771131629894](image/README/1771131629894.png)
 
+You can also view it in the Databricks UI:
+
 ![1771130939797](image/README/1771130939797.png)
+
+</details>
 
 
 ## Build the Bronze Layer
@@ -297,7 +377,15 @@ FORMAT_OPTIONS ('header' = 'true', 'multiLine'='false')
 COPY_OPTIONS ('mergeSchema'='true');  -- safe for extra cols in future
 ```
 
+<details>
+<summary>View images here</summary>
+
+Here's the output from Databricks:
+
 ![1771132312066](image/README/1771132312066.png)
+
+</details>
+
 
 ## Build the Silver Layer
 
@@ -440,7 +528,15 @@ Optional performance tuning using `ZORDER`. The `OPTIMIZE` command reorganizes t
 OPTIMIZE trips_clean ZORDER BY (ride_date, member_casual, start_station_id);
 ```
 
+<details>
+<summary>View images here</summary>
+
+Here's the output from Databricks:
+
 ![1771132945867](image/README/1771132945867.png)
+
+</details>
+
 
 ## Build the Gold Layer
 
@@ -526,6 +622,11 @@ GROUP BY ride_date, ride_hour, start_station_id;
 OPTIMIZE daily_kpis ZORDER BY (ride_date);
 ```
 
+<details>
+<summary>View images here</summary>
+
+Here's the output from Databricks:
+
 ![1771133588428](image/README/1771133588428.png)
 
 ![1771133613472](image/README/1771133613472.png)
@@ -533,6 +634,8 @@ OPTIMIZE daily_kpis ZORDER BY (ride_date);
 ![1771133654807](image/README/1771133654807.png)
 
 ![1771133688392](image/README/1771133688392.png)
+
+</details>
 
 
 ## Wrap Up
