@@ -7,7 +7,7 @@ To build the infrastructure for this project, we will need to set up the followi
 * A **Databricks Workspace** to run our data processing and analytics workloads.
 * An **Access Connector** to securely connect our Databricks workspace to our storage account.
 * A **Storage Account** to store our raw and processed data.
-* A **Container** in the storage account to organize our data.
+* A **Container** in the storage account to store raw data.
 
 In Databricks' side, we will set up the following components:
 

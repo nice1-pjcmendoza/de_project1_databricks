@@ -1,6 +1,9 @@
 # 🗂️ Build the Catalog & Schemas
 
-We begin the project by creating a Catalog and Schemas in Databricks. The Catalog is a logical container for databases, and the Schemas are logical containers for tables. This structure allows us to organize our data according to the **Medallion Architecture**, which consists of the Bronze, Silver, and Gold layers.
+Now that we have our infrastructure set up, we can start building the Catalog and Schemas in Databricks. The Catalog is a logical container for databases, and the Schemas are logical containers for tables. This structure allows us to organize our data according to the **Medallion Architecture**, which consists of the Bronze, Silver, and Gold layers.
+
+In this section, we will create a Catalog named `cyclistic` and four Schemas named `landing`, `bronze`, `silver`, and `gold` to represent the different layers of the Medallion Architecture.
+
 
 ## Create the *cyclistic* Catalog
 

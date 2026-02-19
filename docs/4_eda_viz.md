@@ -1,8 +1,8 @@
 # 📊 Exploratory Data Analysis & Visualization
 
-In this section, we will perform exploratory data analysis (EDA) and visualization on the cleaned and conformed data in the Silver layer. The goal of this analysis is to gain insights into the usage patterns of Cyclistic's bike-sharing service, identify trends, and answer specific business questions. 
+Exploratory Data Analysis (EDA) and Visualization are important steps in the data analysis process. This is the stage where a Data/Business Analyst explores the data to understand its structure, identify patterns, and gain insights that can inform our analysis and decision-making. We're not an analyst here, but hey, we can do EDA too!
 
-We will use SQL to analyze the data and create visualizations to help communicate our findings effectively.
+In this section, we will perform EDA on the cleaned and conformed data in the Silver layer. Our goal in this analysis is to gain insights into the usage patterns of Cyclistic's bike-sharing service, identify trends, and (hopefully) help the business make informed decisions.
 
 
 ### Q1: Which station is the most popular among Cyclistic users?
