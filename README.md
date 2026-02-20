@@ -124,7 +124,7 @@ Databricks has a lot more features and capabilities that we did not cover in thi
 
 * [Azure Databricks documentation](https://learn.microsoft.com/en-us/azure/databricks/)
 
-* [Medallion Architecture on Databricks by Data with Baraa](https://www.datawithbaraa.com/post/medallion-architecture-on-databricks)
+* [What is a medallion architecture?](https://www.databricks.com/glossary/medallion-architecture)
 
 * [Cyclistic Dataset](https://divvy-tripdata.s3.amazonaws.com/index.html)
 

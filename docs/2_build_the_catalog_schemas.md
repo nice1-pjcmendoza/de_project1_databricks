@@ -32,7 +32,7 @@ Alternatively, you can view the details in the Databricks UI.
 
 Following the Medallion Architecture, we will create four schemas: `landing`, `bronze`, `silver`, and `gold`.
 
-If you want to learn more about the Medallion Architecture, check out this [blog post](https://www.datawithbaraa.com/post/medallion-architecture-on-databricks).
+If you want to learn more about the Medallion Architecture, check out [What is a medallion architecture?](https://www.databricks.com/glossary/medallion-architecture).
 
 ```sql
 USE CATALOG cyclistic;
