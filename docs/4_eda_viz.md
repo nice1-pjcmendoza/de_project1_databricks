@@ -18,6 +18,8 @@ ORDER BY trip_count DESC
 LIMIT 1;
 ```
 
+![1771569813373](image/4_eda_viz/1771569813373.png)
+
 Output:
 
 | start_station_name       | trip_count |
@@ -43,7 +45,7 @@ GROUP BY day_of_week, ride_hour
 ORDER BY day_of_week, ride_hour;
 ```
 
-[Chart here]
+![1771570589150](image/4_eda_viz/1771570589150.png)
 
     Trip activity varies significantly by both hour and day of the week, with the highest volumes generally occurring in the afternoon and evening hours. Notable data points include:
 
@@ -69,7 +71,9 @@ GROUP BY month, rideable_type, member_casual
 ORDER BY month, rideable_type, member_casual;
 ```
 
-[Chart here]
+![1771570534548](image/4_eda_viz/1771570534548.png)
+
+![1771570511492](image/4_eda_viz/1771570511492.png)
 
     Trip activity by month shows a clear seasonal trend, with the highest usage in summer months and lower activity in winter. Electric bikes consistently have more trips than classic bikes each month. Examples include:
 
@@ -90,7 +94,7 @@ WHERE member_casual IS NOT NULL
 GROUP BY member_casual;
 ```
 
-[Chart here]
+![1771570240033](image/4_eda_viz/1771570240033.png)
 
     The average trip duration for members is 11.97 minutes, while for casual riders it is 19.21 minutes. Casual riders tend to take longer trips compared to members.
 
@@ -111,7 +115,7 @@ ORDER BY total_distance_km DESC
 LIMIT 20;
 ```
 
-[Chart here]
+![1771570364595](image/4_eda_viz/1771570364595.png)
 
     The distance covered varies significantly by ride type and start station. Notable data points include:
 
