@@ -36,23 +36,16 @@ FROM information_schema.volumes
 WHERE volume_name = 'cyclistic_data';
 ```
 
-<details>
-<summary>View images here</summary>
-
 Here's the output from Databricks:
 
 ![1771329515724](image/3_build_the_layers/1771329515724.png)
 
-</details>
 
 ### List Files in cyclistic_data Volume
 
 ```sql
 LIST '/Volumes/cyclistic/landing/cyclistic_data/';
 ```
-
-<details>
-<summary>View images here</summary>
 
 Here's the output from Databricks:
 
@@ -62,8 +55,6 @@ You can also view it in the Databricks UI:
 
 ![1771329571158](image/3_build_the_layers/1771329571158.png)
 
-</details>
-
 
 ## 🥉 Build the Bronze Layer
 
@@ -72,11 +63,6 @@ The Bronze layer is where we will store the raw ingested data in a Delta table f
 We wll also add ingestion metadata columns to track the source file and ingestion timestamp.
 
 **Note**: In a production environment, you would typically implement more robust data validation and error handling mechanisms during the ingestion process.
-
-
-### Analyze the Dataset
-
-Pics!!!
 
 
 ### Create DDL for the *trips_raw* Table
@@ -140,19 +126,15 @@ FORMAT_OPTIONS ('header' = 'true', 'multiLine'='false')
 COPY_OPTIONS ('mergeSchema'='true');  -- safe for extra cols in future
 ```
 
-<details>
-<summary>View images here</summary>
-
 Here's the output from Databricks:
 
 ![1771329593679](image/3_build_the_layers/1771329593679.png)
-
-</details>
 
 
 ## 🥈 Build the Silver Layer
 
 The Silver layer is where we will store the cleansed and conformed data. This layer is optimized for analytics and reporting.
+
 
 ### Explore & Understand The Data
 
@@ -201,6 +183,7 @@ TBLPROPERTIES (
   'delta.autoOptimize.autoCompact'='true'
 );
 ```
+
 
 ### Create the Haversine Function
 
@@ -291,14 +274,9 @@ Optional performance tuning using `ZORDER`. The `OPTIMIZE` command reorganizes t
 OPTIMIZE trips_clean ZORDER BY (ride_date, member_casual, start_station_id);
 ```
 
-<details>
-<summary>View images here</summary>
-
 Here's the output from Databricks:
 
 ![1771329615737](image/3_build_the_layers/1771329615737.png)
-
-</details>
 
 
 ## 🥇 Build the Gold Layer
@@ -306,6 +284,7 @@ Here's the output from Databricks:
 The Gold layer is where we will store the modeled data that is optimized for analytics and reporting. This layer typically contains fact and dimension tables, as well as pre-aggregated tables for common queries. 
 
 In this project, we will create a fact table for the trips and a dimension table for the stations. We will also create some pre-aggregated tables to support common queries and KPIs.
+
 
 ### Create the Fact Table
 
@@ -385,17 +364,22 @@ GROUP BY ride_date, ride_hour, start_station_id;
 OPTIMIZE daily_kpis ZORDER BY (ride_date);
 ```
 
-<details>
-<summary>View images here</summary>
+### Check the Gold Layer Tables
 
-Here's the output from Databricks:
+The `fact_trips` table
 
 ![1771329633856](image/3_build_the_layers/1771329633856.png)
 
+The `dim_station` table
+
 ![1771329650032](image/3_build_the_layers/1771329650032.png)
+
+The `daily_kpis` table
 
 ![1771329662518](image/3_build_the_layers/1771329662518.png)
 
+The `station_hourly` table
+
 ![1771329673287](image/3_build_the_layers/1771329673287.png)
 
-</details>
+We have successfully built the Landing, Bronze, Silver, and Gold layers of our Medallion Architecture on Databricks! Next we will explore the data and create some visualizations to gain insights from the data.

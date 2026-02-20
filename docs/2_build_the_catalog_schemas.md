@@ -7,7 +7,7 @@ In this section, we will create a Catalog named `cyclistic` and four Schemas nam
 
 ## Create the *cyclistic* Catalog
 
-We create a Catalog `cyclistic` that will serve as the top-level container for all our data. The `MANAGED LOCATION` points to the root of our storage account (i.e. `deprojectcontainer`), and we will create an external volume in the Landing layer to reference specific folders in our storage account.
+We create the `cyclistic` Catalog that will serve as the top-level container for all our data. The `MANAGED LOCATION` points to the root of our storage account (i.e. `deprojectcontainer`).
 
 ```sql
 CREATE CATALOG IF NOT EXISTS cyclistic 
@@ -15,17 +15,15 @@ MANAGED LOCATION 'abfss://deprojectcontainer@deprojectextdatalake.dfs.core.windo
 COMMENT 'Catalog for the Cyclistic project';
 ```
 
-Let's verify the catalog we just created.
+Verify the catalog we just created.
 
 ```sql
 DESCRIBE CATALOG EXTENDED cyclistic;
 ```
 
-Here's the output from Databricks:
-
 ![1771329253819](image/2_build_the_catalog_schemas/1771329253819.png)
 
-You can also view its properties in the Databricks UI.
+Alternatively, you can view the details in the Databricks UI.
 
 ![1771329304129](image/2_build_the_catalog_schemas/1771329304129.png)
 

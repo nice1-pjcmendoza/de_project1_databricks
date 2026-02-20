@@ -125,6 +125,9 @@ Databricks has a lot more features and capabilities that we did not cover in thi
 
 
 
+Medallion Architecture on Databricks. https://www.datawithbaraa.com/post/medallion-architecture-on-databricks
+
+
 ## 👨‍💻 About Me
 
 Hi! 
@@ -135,8 +138,6 @@ When I'm not working on data projects, I spend my time reading (I'm into Stephen
 
 Let's stay in touch! Feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/paul-joseph-mendoza/) or check out my [GitHub](https://github.com/nice1-pjcmendoza) profile for more projects coming sooooon.
 
-![1771329765838](image/README/1771329765838.png) 
+[![1771329765838](image/README/1771329765838.png)](https://www.linkedin.com/in/paul-joseph-mendoza/)
 
-![1771329782128](image/README/1771329782128.png)
-
-![1771329830562](image/README/1771329830562.png)
+[![1771329782128](image/README/1771329782128.png)](https://github.com/nice1-pjcmendoza)
