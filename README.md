@@ -117,27 +117,27 @@ And that concludes our project on building a batch pipeline using Azure Databric
 
 In a way, we also learned how to use AI tools like Github Copilot, Databricks Genie, and ChatGPT to assist us understanding data engineering concepts, writing codes, and documenting our project. For junior data engineers like myself, these tools can be very helpful in accelerating our work and improving our productivity, but it's important to use them responsibly and ensure that we understand the materials they generate.
 
-Databricks has a lot more features and capabilities that we did not cover in this project, such as streaming pipelines, change data capture (CDC), and machine learning. I look forward to exploring these features in my future projects and sharing my learnings.
+Databricks has a lot more features and capabilities that we did not cover in this project such as streaming pipelines and machine learning. We also did not cover data engineering concepts and practices such as data quality checks and monitoring, change data capture, and PySpark. I look forward to exploring these features in my future projects and sharing my learnings with you.
 
 
 ## 📚 References
 
+* [Azure Databricks documentation](https://learn.microsoft.com/en-us/azure/databricks/)
 
+* [Medallion Architecture on Databricks by Data with Baraa](https://www.datawithbaraa.com/post/medallion-architecture-on-databricks)
 
-
-Medallion Architecture on Databricks. https://www.datawithbaraa.com/post/medallion-architecture-on-databricks
+* [Cyclistic Dataset](https://divvy-tripdata.s3.amazonaws.com/index.html)
 
 
 ## 👨‍💻 About Me
 
 Hi! 
 
-I'm **Paul Joseph Mendoza**, a junior data engineer with a love for building new stuff and uncovering the stories hidden within data. As a career shifter, I transitioned into data engineering after discovering my passion for working with data and solving complex problems. I have a strong proficiency in SQL, Python, Excel, Power BI, and cloud platforms like Azure and AWS. I'm always eager to learn new technologies and build data engineering projects. 
+I'm `Paul Joseph Mendoza`, a junior data engineer with a love for building new stuff and uncovering the stories hidden within data. As a career shifter, I transitioned into data engineering after discovering my passion for working with data and solving complex problems. I have a strong proficiency in SQL, Python, Excel, Power BI, and cloud platforms like Azure and AWS. I'm always eager to learn new technologies and build data engineering projects. 
 
 When I'm not working on data projects, I spend my time reading (I'm into Stephen King books right now), or walking around Cebu City with my wife, or just napping (Yeah, this is the best). 
 
 Let's stay in touch! Feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/paul-joseph-mendoza/) or check out my [GitHub](https://github.com/nice1-pjcmendoza) profile for more projects coming sooooon.
 
 [![1771329765838](image/README/1771329765838.png)](https://www.linkedin.com/in/paul-joseph-mendoza/)
-
 [![1771329782128](image/README/1771329782128.png)](https://github.com/nice1-pjcmendoza)
