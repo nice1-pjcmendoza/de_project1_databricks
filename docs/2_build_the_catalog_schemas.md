@@ -42,3 +42,7 @@ CREATE SCHEMA IF NOT EXISTS bronze COMMENT 'Raw ingested data';
 CREATE SCHEMA IF NOT EXISTS silver COMMENT 'Cleansed, conformed data';
 CREATE SCHEMA IF NOT EXISTS gold   COMMENT 'For analytics (facts, dimensions, aggregations)';
 ```
+
+We have successfully created our Catalog and Schemas! 
+
+Hooray! 🥳
