@@ -1,4 +1,4 @@
-# 📊 Exploratory Data Analysis & Visualization
+# 📊 Perform Exploratory Data Analysis & Visualization
 
 Exploratory Data Analysis (EDA) and Visualization are important steps in the data analysis process. This is the stage where a Data/Business Analyst explores the data to understand its structure, identify patterns, and gain insights that can inform our analysis and decision-making. We're not an analyst here, but hey, we can do EDA too!
 

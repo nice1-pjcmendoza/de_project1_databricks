@@ -1,8 +1,12 @@
-# Data Engineering with Databricks: A Cyclistic Bike-Share Case Study
+# Data Engineering with Azure Databricks: A Cyclistic Bike-Share Project
+
+
+`Azure Databricks` `Data Engineering` `Medallion Architecture` `Batch Pipeline` `Exploratory Data Analysis` `Visualization` `AI Tools`
+
 
 ## 🧭 Introduction
 
-Welcome to the **Data Engineering with Databricks: A Cyclistic Bike-Share Case Study**! In this project, we will build a batch pipeline using Azure Databricks to process and analyze the Cyclistic bike-share dataset. The goal of this project is to demonstrate how to implement the Medallion Architecture on Azure Databricks, which is a data design pattern that organizes data into different layers based on its level of refinement and quality.
+Welcome to the **Data Engineering with Azure Databricks: A Cyclistic Bike-Share Project**! In this project, we will build a batch pipeline using Azure Databricks to process and analyze the Cyclistic bike-share dataset. The goal of this project is to demonstrate how to implement the Medallion Architecture on Azure Databricks, which is a data design pattern that organizes data into different layers based on its level of refinement and quality.
 
 This project will cover the following key areas:
 - Understand the business requirements
@@ -24,7 +28,7 @@ Thank you and enjoy!
 
 The manager of Marketing department believes Cyclistic's future success depends on maximizing the number of annual memberships. Therefore, the team wants to understand how casual users and annual members use Cyclistic bikes differently. From these insights, Marketing will design a new strategy to convert casual users into members.
 
-As the Data Engineer, your task is to prepare the data for analysis and help the Marketing department find insights that will assist them in designing a new marketing strategy. 
+As the Data Engineer, your task is to primarily prepare the data for analysis and, as secondary, help the Marketing department find insights that will assist them in designing a new marketing strategy. 
 
 Specifically, you will need to:
 1. Setup an Azure-based storage solution to store the raw data files.
@@ -32,7 +36,7 @@ Specifically, you will need to:
 3. Create Hourly and Daily aggregations to analyze the usage patterns and activities.
 4. Analyze the data and identify trends and patterns.
 
-You are given access to the 2025 Cyclistic dataset and an Azure account where you will build your project. You are also given unlimited access to coffee in the pantry.
+You are given access to the 2025 Cyclistic dataset and an Azure account where you will build your project. You are also given unlimited access to coffee in the pantry. ☕︎
 
 Let's explore the dataset.
 
@@ -103,7 +107,7 @@ In this section, we will build each layer of the Medallion Architecture, startin
 
 Check out the documentation here 👉 [Build the Landing, Bronze, Silver & Gold Layers](docs/3_build_the_layers.md)
 
-## 📊 Exploratory Data Analysis & Visualization
+## 📊 Perform Exploratory Data Analysis & Visualization
 
 Exploratory Data Analysis (EDA) and Visualization are important steps in the data analysis process. This is the stage where a Data/Business Analyst explores the data to understand its structure, identify patterns, and gain insights that can inform our analysis and decision-making. We're not an analyst here, but hey, we can do EDA too!
 
@@ -115,7 +119,7 @@ Check out the documentation here 👉 [Exploratory Data Analysis & Visualization
 
 And that concludes our project on building a batch pipeline using Azure Databricks to process and analyze the Cyclistic bike-share dataset. We successfully implemented the Medallion Architecture on Azure Databricks, which allowed us to organize our data into different layers based on its level of refinement and quality. We also performed exploratory data analysis and visualization to identify trends and gain insights.
 
-In a way, we also learned how to use AI tools like Github Copilot, Databricks Genie, and ChatGPT to assist us understanding data engineering concepts, writing codes, and documenting our project. For junior data engineers like myself, these tools can be very helpful in accelerating our work and improving our productivity, but it's important to use them responsibly and ensure that we understand the materials they generate.
+In a way, we also learned how to use AI tools like Github Copilot, Databricks Genie, and ChatGPT to assist us understanding data engineering concepts, writing codes, analyzing data, and documenting our project. For junior data engineers like myself, these tools can be very helpful in accelerating our work and improving our productivity, but it's important to use them responsibly and ensure that we understand the materials they generate.
 
 Databricks has a lot more features and capabilities that we did not cover in this project such as streaming pipelines and machine learning. We also did not cover data engineering concepts and practices such as data quality checks and monitoring, change data capture, and PySpark. I look forward to exploring these features in my future projects and sharing my learnings with you.
 
@@ -133,7 +137,7 @@ Databricks has a lot more features and capabilities that we did not cover in thi
 
 Hi! 
 
-I'm `Paul Joseph Mendoza`, a junior data engineer with a love for building new stuff and uncovering the stories hidden within data. As a career shifter, I transitioned into data engineering after discovering my passion for working with data and solving complex problems. I have a strong proficiency in SQL, Python, Excel, Power BI, and cloud platforms like Azure and AWS. I'm always eager to learn new technologies and build data engineering projects. 
+I'm `Paul Joseph Mendoza`, a junior data engineer with a love for building new stuff and uncovering the stories hidden within data. As a career shifter, I transitioned into data engineering after discovering my passion for working with data and solving complex problems. I have a strong proficiency in SQL, Python, Excel, Power BI, and platforms like Azure, AWS, Snowflake, and Databricks. I'm always eager to learn new technologies and build data engineering projects. 
 
 When I'm not working on data projects, I spend my time reading (I'm into Stephen King books right now), or walking around Cebu City with my wife, or just napping (Yeah, this is the best). 
 

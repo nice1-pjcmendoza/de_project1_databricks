@@ -206,6 +206,7 @@ RETURN 2*6371*asin(sqrt(
 ));
 ```
 
+
 ### Transform and Load Data
 
 The Transform process is probably the most exciting part of this project. It is where we apply the data quality checks and transformations to cleanse the data.
@@ -257,17 +258,6 @@ WHEN MATCHED THEN UPDATE SET *
 WHEN NOT MATCHED THEN INSERT *;
 ```
 
-Add data quality constraints. This is a simple way to enforce data quality rules at the table level. The `TBLPROPERTIES` can be used to document the quality checks that are applied to the data in the Silver layer. This can serve as a reference for data engineers and analysts who work with the data, and it can also be used by automated data quality monitoring tools. 
-
-If the data violates any of the specified quality rules, it can trigger alerts or prevent the data from being used in downstream processes, ensuring that only high-quality data is available for analysis and reporting.
-
-```sql
-ALTER TABLE trips_clean SET TBLPROPERTIES (
-  'quality.duration_pos' = 'ended_at > started_at',
-  'quality.geo_valid'    = 'lat/lng within range'
-);
-```
-
 Optional performance tuning using `ZORDER`. The `OPTIMIZE` command reorganizes the data in the table to improve query performance. `ZORDER` is a technique that optimizes the layout of data on disk to improve query performance, especially for queries that filter on specific columns. By ZORDERing the `trips_clean` table by `ride_date`, `member_casual`, and `start_station_id`, we can significantly speed up queries that filter on these columns, which are common in our use case. 
 
 ```sql
@@ -317,6 +307,7 @@ FROM cyclistic.silver.trips_clean;
 OPTIMIZE fact_trips ZORDER BY (member_casual, rideable_type);
 ```
 
+
 ### Create the Dimension Table
 
 The dimension table is designed to provide descriptive information about the stations, allowing us to analyze bike usage patterns based on station locations and names.
@@ -331,6 +322,7 @@ SELECT DISTINCT
 FROM cyclistic.silver.trips_clean
 WHERE COALESCE(start_station_id, end_station_id) IS NOT NULL;
 ```
+
 
 ### Create the KPIs and Metrics
 
@@ -363,6 +355,7 @@ GROUP BY ride_date, ride_hour, start_station_id;
 
 OPTIMIZE daily_kpis ZORDER BY (ride_date);
 ```
+
 
 ### Check the Gold Layer Tables
 
